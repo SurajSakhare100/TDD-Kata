@@ -1,11 +1,11 @@
 export interface User {
-  id: string;
+  id: number;
   email: string;
   role: 'user' | 'admin';
 }
 
 export interface Sweet {
-  id: string;
+  id: number;
   name: string;
   category: string;
   price: number;

@@ -147,7 +147,74 @@ npm run test:coverage # Coverage report
 - ✅ Inventory management (purchase/restock)
 - ✅ Role-based access control (User/Admin)
 - ✅ Responsive frontend design
+- ✅ Comprehensive test coverage (Backend & Frontend)
+- ✅ Modern UI with Tailwind CSS
 
+## Screenshots
+
+*(Screenshots will be added here showing the application in action)*
+
+## My AI Usage
+
+### AI Tools Used
+
+This project was developed with the assistance of AI tools to accelerate development and ensure best practices:
+
+- **Cursor AI (Composer)**: Used throughout the development process for:
+  - Generating boilerplate code for Express routes, controllers, and services
+  - Creating React components with TypeScript
+  - Writing test cases following TDD principles
+  - Code refactoring and optimization suggestions
+  - Debugging assistance
+
+### How AI Was Used
+
+1. **Initial Project Setup**
+   - AI assisted in generating the project structure for both backend and frontend
+   - Created configuration files (tsconfig.json, vite.config.ts, tailwind.config.js)
+   - Generated boilerplate for Express server setup
+
+2. **Backend Development**
+   - Used AI to generate database models and schema
+   - Created authentication middleware and JWT handling
+   - Generated API route handlers and controllers
+   - AI helped write integration tests for API endpoints
+
+3. **Frontend Development**
+   - AI generated React components with proper TypeScript types
+   - Created authentication context and state management
+   - Generated form components with validation
+   - AI assisted in converting manual CSS to Tailwind CSS classes
+   - Created comprehensive component tests
+
+4. **Testing**
+   - AI generated test templates following TDD patterns
+   - Created mock data and test utilities
+   - Generated test cases for edge cases and error handling
+
+### Reflection on AI Impact
+
+**Positive Impacts:**
+- **Speed**: Significantly accelerated development by generating boilerplate code
+- **Best Practices**: AI suggested modern patterns and best practices
+- **Consistency**: Helped maintain consistent code style across the project
+- **Learning**: Exposed me to new patterns and approaches I might not have considered
+
+**Challenges & Learnings:**
+- **Review Required**: All AI-generated code was carefully reviewed and tested
+- **Understanding**: Made sure to understand every piece of code before using it
+- **Customization**: AI suggestions were customized to fit project-specific requirements
+- **Testing**: All AI-generated code was thoroughly tested to ensure correctness
+
+**Responsible Usage:**
+- Never blindly copied AI-generated code
+- Always reviewed and understood the code before implementation
+- Customized AI suggestions to match project requirements
+- Verified all functionality through manual testing
+- Used AI as a tool to augment, not replace, my development skills
+
+**Conclusion:**
+AI tools were invaluable in accelerating development and ensuring code quality. They helped generate boilerplate, suggest best practices, and catch potential issues early. However, careful review, understanding, and testing were always prioritized to ensure the final product met all requirements and maintained high quality standards.
 
 ## License
 
