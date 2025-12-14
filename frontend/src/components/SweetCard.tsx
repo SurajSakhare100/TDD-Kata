@@ -12,7 +12,7 @@ interface SweetCardProps {
 const SweetCard = ({ sweet, onPurchase, onUpdate, isAdmin }: SweetCardProps) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRestockModal, setShowRestockModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const handlePurchase = async () => {
@@ -21,22 +21,6 @@ const SweetCard = ({ sweet, onPurchase, onUpdate, isAdmin }: SweetCardProps) => 
       await onPurchase(sweet.id);
     } finally {
       setIsPurchasing(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!window.confirm(`Are you sure you want to delete ${sweet.name}?`)) {
-      return;
-    }
-
-    setIsDeleting(true);
-    try {
-      await sweetService.delete(sweet.id);
-      onUpdate();
-    } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to delete sweet');
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -51,7 +35,7 @@ const SweetCard = ({ sweet, onPurchase, onUpdate, isAdmin }: SweetCardProps) => 
         </div>
         <div className="mb-4">
           <div className="text-2xl font-bold text-gray-900 mb-2">
-            ${sweet.price.toFixed(2)}
+            ${typeof sweet.price === 'number' ? sweet.price.toFixed(2) : parseFloat(String(sweet.price || 0)).toFixed(2)}
           </div>
           <div className="text-sm text-gray-600">
             Stock:{' '}
@@ -83,11 +67,10 @@ const SweetCard = ({ sweet, onPurchase, onUpdate, isAdmin }: SweetCardProps) => 
                 Restock
               </button>
               <button
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
+                onClick={() => setShowDeleteModal(true)}
+                className="py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
               >
-                {isDeleting ? '...' : 'Delete'}
+                Delete
               </button>
             </div>
           )}
@@ -109,6 +92,14 @@ const SweetCard = ({ sweet, onPurchase, onUpdate, isAdmin }: SweetCardProps) => 
           onUpdate={onUpdate}
         />
       )}
+
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          sweet={sweet}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={onUpdate}
+        />
+      )}
     </>
   );
 };
@@ -117,8 +108,8 @@ const EditSweetModal = ({ sweet, onClose, onUpdate }: { sweet: Sweet; onClose: (
   const [formData, setFormData] = useState({
     name: sweet.name,
     category: sweet.category,
-    price: sweet.price.toString(),
-    quantity: sweet.quantity.toString(),
+    price: typeof sweet.price === 'number' ? sweet.price.toString() : String(sweet.price || '0'),
+    quantity: typeof sweet.quantity === 'number' ? sweet.quantity.toString() : String(sweet.quantity || '0'),
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -146,8 +137,19 @@ const EditSweetModal = ({ sweet, onClose, onUpdate }: { sweet: Sweet; onClose: (
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Edit Sweet</h2>
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Edit Sweet</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label="Close"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 border border-red-200">
             {error}
@@ -203,19 +205,101 @@ const EditSweetModal = ({ sweet, onClose, onUpdate }: { sweet: Sweet; onClose: (
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+              disabled={loading}
+              className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-60"
+              className="flex-1 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? 'Updating...' : 'Update'}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Updating...
+                </>
+              ) : (
+                'Update'
+              )}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+};
+
+const DeleteConfirmationModal = ({ sweet, onClose, onConfirm }: { sweet: Sweet; onClose: () => void; onConfirm: () => void }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setError('');
+
+    try {
+      await sweetService.delete(sweet.id);
+      onConfirm();
+      onClose();
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to delete sweet');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-semibold mb-2 text-center text-gray-800">Delete Sweet</h2>
+        <p className="text-gray-600 text-center mb-6">
+          Are you sure you want to delete <span className="font-semibold text-gray-900">{sweet.name}</span>? This action cannot be undone.
+        </p>
+        
+        {error && (
+          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 border border-red-200">
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isDeleting}
+            className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isDeleting ? (
+              <>
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Deleting...
+              </>
+            ) : (
+              'Delete'
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -244,8 +328,19 @@ const RestockModal = ({ sweet, onClose, onUpdate }: { sweet: Sweet; onClose: () 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Restock {sweet.name}</h2>
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Restock {sweet.name}</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label="Close"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 border border-red-200">
             {error}
@@ -267,16 +362,27 @@ const RestockModal = ({ sweet, onClose, onUpdate }: { sweet: Sweet; onClose: () 
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+              disabled={loading}
+              className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-60"
+              className="flex-1 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? 'Restocking...' : 'Restock'}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Restocking...
+                </>
+              ) : (
+                'Restock'
+              )}
             </button>
           </div>
         </form>

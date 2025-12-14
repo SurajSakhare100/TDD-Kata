@@ -1,6 +1,14 @@
 import apiClient from './api';
 import { Sweet } from '../types';
 
+// Helper function to normalize sweet data (convert string numbers to numbers)
+const normalizeSweet = (sweet: any): Sweet => ({
+  ...sweet,
+  id: typeof sweet.id === 'number' ? sweet.id : parseInt(String(sweet.id)),
+  price: typeof sweet.price === 'number' ? sweet.price : parseFloat(String(sweet.price || 0)),
+  quantity: typeof sweet.quantity === 'number' ? sweet.quantity : parseInt(String(sweet.quantity || 0)),
+});
+
 export interface SearchFilters {
   name?: string;
   category?: string;
@@ -37,22 +45,22 @@ export const sweetService = {
       : '/api/sweets';
     
     const response = await apiClient.get<Sweet[]>(url);
-    return response.data;
+    return response.data.map(normalizeSweet);
   },
 
   async getById(id: number): Promise<Sweet> {
     const response = await apiClient.get<Sweet>(`/api/sweets/${id}`);
-    return response.data;
+    return normalizeSweet(response.data);
   },
 
   async create(data: CreateSweetData): Promise<Sweet> {
     const response = await apiClient.post<Sweet>('/api/sweets', data);
-    return response.data;
+    return normalizeSweet(response.data);
   },
 
   async update(id: number, data: UpdateSweetData): Promise<Sweet> {
     const response = await apiClient.put<Sweet>(`/api/sweets/${id}`, data);
-    return response.data;
+    return normalizeSweet(response.data);
   },
 
   async delete(id: number): Promise<void> {
@@ -61,12 +69,12 @@ export const sweetService = {
 
   async purchase(id: number, quantity: number = 1): Promise<Sweet> {
     const response = await apiClient.post<Sweet>(`/api/sweets/${id}/purchase`, { quantity });
-    return response.data;
+    return normalizeSweet(response.data);
   },
 
   async restock(id: number, quantity: number): Promise<Sweet> {
     const response = await apiClient.post<Sweet>(`/api/sweets/${id}/restock`, { quantity });
-    return response.data;
+    return normalizeSweet(response.data);
   },
 };
 
