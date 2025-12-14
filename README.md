@@ -152,7 +152,27 @@ npm run test:coverage # Coverage report
 
 ## Screenshots
 
-*(Screenshots will be added here showing the application in action)*
+Here are screenshots of the Sweet Shop Management System in action:
+
+<div align="center">
+
+### Application Screenshots
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="frontend/public/user-dashboard.png" alt="User Dashboard" width="100%"/> <br/> **User Dashboard** | <img src="frontend/public/user-edit.png" alt="User Edit Sweet" width="100%"/> <br/> **User Edit Sweet** | <img src="frontend/public/admin-filter.png" alt="Admin Filter" width="100%"/> <br/> **Admin Filter** |
+| <img src="frontend/public/admin-add.png" alt="Admin Add Sweet" width="100%"/> <br/> **Admin Add Sweet** | <img src="frontend/public/admin-edit-sweet.png" alt="Admin Edit Sweet" width="100%"/> <br/> **Admin Edit Sweet** | <img src="frontend/public/admin-delete.png" alt="Admin Delete Sweet" width="100%"/> <br/> **Admin Delete Sweet** |
+
+</div>
+
+### Screenshot Descriptions
+
+- **User Dashboard** (`user-dashboard.png`) - Main dashboard showing all available sweets with purchase functionality
+- **User Edit Sweet** (`user-edit.png`) - User view of sweet details and purchase options
+- **Admin Filter** (`admin-filter.png`) - Admin view with search and filter functionality
+- **Admin Add Sweet** (`admin-add.png`) - Admin modal for adding new sweets to the inventory
+- **Admin Edit Sweet** (`admin-edit-sweet.png`) - Admin modal for editing sweet details
+- **Admin Delete Sweet** (`admin-delete.png`) - Admin confirmation modal for deleting sweets
 
 ## My AI Usage
 
