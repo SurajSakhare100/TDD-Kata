@@ -35,17 +35,30 @@ Backend API for the Sweet Shop Management System built with Node.js, Express, Ty
      JWT_EXPIRES_IN=24h
      ```
 
-4. **Run Database Migrations**
-   - Create tables for users and sweets
-   - (Migrations will be added as part of TDD implementation)
+4. **Initialize Database Schema**
+   - The schema will be automatically created when you start the server
+   - Or manually run the schema: `psql -d sweet_shop_db -f src/config/schema.sql`
 
-5. **Start Development Server**
+5. **Seed Database (Optional but Recommended)**
+   ```bash
+   npm run seed
+   ```
+   This will populate the database with:
+   - 3 test users (1 admin, 2 regular users)
+   - 17 sample sweets across 5 categories
+   
+   **Test Credentials:**
+   - Admin: `admin@sweetshop.com` / `admin123`
+   - User: `user@sweetshop.com` / `user123`
+   - User: `john@example.com` / `password123`
+
+6. **Start Development Server**
    ```bash
    npm run dev
    ```
    The server will start on `http://localhost:3000`
 
-6. **Run Tests**
+7. **Run Tests**
    ```bash
    npm test              # Run all tests
    npm run test:watch    # Run tests in watch mode
@@ -57,7 +70,7 @@ Backend API for the Sweet Shop Management System built with Node.js, Express, Ty
 ```
 backend/
 ├── src/
-│   ├── config/         # Configuration files (database, JWT)
+│   ├── config/         # Configuration files (database, JWT, seed)
 │   ├── controllers/    # Request handlers
 │   ├── middleware/     # Auth, validation middleware
 │   ├── models/         # Database models
