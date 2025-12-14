@@ -39,7 +39,7 @@ describe('AuthContext', () => {
   it('login updates user state', async () => {
     const mockResponse = {
       token: 'test-token',
-      user: { id: 1, email: 'test@test.com', role: 'user' },
+      user: { id: 1, email: 'test@test.com', role: 'user' as const },
     };
 
     vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);
@@ -57,7 +57,7 @@ describe('AuthContext', () => {
   it('register updates user state', async () => {
     const mockResponse = {
       token: 'test-token',
-      user: { id: 1, email: 'new@test.com', role: 'user' },
+      user: { id: 1, email: 'new@test.com', role: 'user' as const },
     };
 
     vi.mocked(authService.authService.register).mockResolvedValue(mockResponse);
@@ -75,7 +75,7 @@ describe('AuthContext', () => {
   it('logout clears user state', async () => {
     const mockResponse = {
       token: 'test-token',
-      user: { id: 1, email: 'test@test.com', role: 'user' },
+      user: { id: 1, email: 'test@test.com', role: 'user' as const },
     };
 
     vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);
@@ -97,7 +97,7 @@ describe('AuthContext', () => {
   it('isAdmin returns true for admin users', async () => {
     const mockResponse = {
       token: 'test-token',
-      user: { id: 1, email: 'admin@test.com', role: 'admin' },
+      user: { id: 1, email: 'admin@test.com', role: 'admin' as const },
     };
 
     vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);

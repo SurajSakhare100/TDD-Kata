@@ -4,9 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import Register from '../Register';
 import { AuthProvider } from '../../context/AuthContext';
-import * as authService from '../../services/authService';
 
-vi.mock('../../services/authService');
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
