@@ -11,6 +11,17 @@ TDD-Kata/
 └── README.md         # This file
 ```
 
+## Test Credentials
+
+**For Testing Purposes Only**
+
+| Role | Email | Password | Access |
+|------|-------|----------|--------|
+| **Admin** | `admin@sweetshop.com` | `admin123` | Full access including add, edit, delete, and restock sweets |
+| **User** | `user@sweetshop.com` | `user123` | Can view and purchase sweets |
+| **User** | `john@example.com` | `password123` | Can view and purchase sweets |
+
+
 ## Quick Start
 
 ### Backend Setup
