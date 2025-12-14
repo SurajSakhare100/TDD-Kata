@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { UserModel, CreateUserData } from '../models/User';
-import { JWT_SECRET } from '../config/jwt';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/jwt';
 
 export interface AuthResponse {
   token: string;
@@ -23,10 +23,13 @@ export class AuthService {
     const user = await UserModel.create(data);
 
     // Generate token
+    const signOptions: SignOptions = {
+      expiresIn: JWT_EXPIRES_IN as unknown as number,
+    };
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+      signOptions
     );
 
     return {
@@ -53,10 +56,13 @@ export class AuthService {
     }
 
     // Generate token
+    const signOptions: SignOptions = {
+      expiresIn: JWT_EXPIRES_IN as unknown as number,
+    };
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+      signOptions
     );
 
     return {

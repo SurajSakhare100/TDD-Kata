@@ -34,7 +34,7 @@ async function initializeDatabase() {
   }
 }
 
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Sweet Shop API is running' });
 });
 
@@ -42,11 +42,11 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/sweets', sweetRoutes);
 
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
