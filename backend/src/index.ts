@@ -1,11 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import pool from './config/database';
 import authRoutes from './routes/authRoutes';
 import sweetRoutes from './routes/sweetRoutes';
-import fs from 'fs';
-import path from 'path';
 
 dotenv.config();
 
@@ -20,19 +17,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Initialize database schema
-async function initializeDatabase() {
-  try {
-    const schemaPath = path.join(__dirname, 'config', 'schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf-8');
-    await pool.query(schema);
-    console.log('✅ Database schema initialized');
-  } catch (error: any) {
-    if (error.code !== '42P07') { // Table already exists
-      console.error('❌ Error initializing database:', error.message);
-    }
-  }
-}
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Sweet Shop API is running' });
@@ -53,7 +37,6 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 
 // Start server
 async function startServer() {
-  await initializeDatabase();
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
   });
